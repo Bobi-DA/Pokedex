@@ -1,0 +1,16 @@
+body{
+    padding: 32px;
+}
+
+.card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+#content{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    
+}
