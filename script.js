@@ -1,14 +1,14 @@
 let namePokemon = [];
 let urlPokemon = [];
 let picturesPokemon = [];
-const BASE_URL = "https://pokeapi.co/api/v2/pokemon/1";
+let typesPokemon = [];
 const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
 
 
 
 
 
-function init() {
+function init() {       // initialisierung
     render();
     fetchDataJsonOffset();
 }
@@ -29,37 +29,50 @@ async function fetchDataJsonOffset() {
         const result = results[i];
         namePokemon.push(result.name);
         urlPokemon.push(result.url);
-        
+
         showPicturePokemon(i);
+        showTypesPokemon(i);
     }
 }
 
-async function showPicturePokemon(i) {
-    let response = await fetch(urlPokemon[i]);       // Holt die Daten von der API
-    let responseAsJson2 = await response.json(); // Wandelt die Antwort in ein JSON-Objekt um.
-    let picturePokemonUrl = responseAsJson2.sprites.other.dream_world.front_default;
 
-    console.log('Picture: ', picturePokemonUrl);
+async function showPicturePokemon(i) {
+    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API
+    let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
+    let picturePokemonUrl = responseAsJson.sprites.other.dream_world.front_default;
 
     cardPokemonHTML(i, picturePokemonUrl);
 }
 
 
+async function showTypesPokemon(i) {
+    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API
+    let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
+    let typePokemonUrl = responseAsJson.types;
+
+    console.log('Types:', typePokemonUrl);
+
+    console.log('Type 0: ', typePokemonUrl[0].type.name);
+    typesPokemon.push(typePokemonUrl[i].type.name);
+
+    // console.log('Type 1: ', typePokemonUrl[1].type.name);
+}
+
 
 function cardPokemonHTML(i, picturePokemonUrl) {
     return content.innerHTML += /*html*/`
-
-    <div class="card" style="width: 18rem;">
-        <div class="card-header">
-            <div>#${i + 1}</div>
-            <div>${namePokemon[i]}</div>
+        <div class="card" style="width: 18rem;">
+            <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
+            <div class="card-header">
+                <div>#${i + 1}</div>
+                <div>${namePokemon[i]}</div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <span></span>
+                    <span></span>
+                </p>
+            </div>
         </div>
-        <img src="${picturePokemonUrl}" class="card-img-top m-4" alt="Pokemon-Picture">
-        <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                card's content.</p>
-        </div>
-    </div>
 `;
-
 }
