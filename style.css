@@ -14,3 +14,9 @@ body{
     justify-content: center;
     
 }
+
+.card-img-top{
+    width: 56%;
+    min-height: auto;
+}
+
