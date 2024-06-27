@@ -9,8 +9,8 @@ const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
 
 
 function init() {       // initialisierung
-    render();
     fetchDataJsonOffset();
+    render();
 }
 
 
@@ -30,8 +30,8 @@ async function fetchDataJsonOffset() {
         namePokemon.push(result.name);
         urlPokemon.push(result.url);
 
-        showPicturePokemon(i);
         showTypesPokemon(i);
+        showPicturePokemon(i);
     }
 }
 
@@ -50,28 +50,31 @@ async function showTypesPokemon(i) {
     let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
     let typePokemonUrl = responseAsJson.types;
 
-    console.log('Types:', typePokemonUrl);
 
-    console.log('Type 0: ', typePokemonUrl[0].type.name);
-    typesPokemon.push(typePokemonUrl[i].type.name);
+    // console.log('Type 0: ', typePokemonUrl[0].type.name);
+    typesPokemon.push(typePokemonUrl[0].type.name);
 
-    // console.log('Type 1: ', typePokemonUrl[1].type.name);
+    console.log('typesPokemon:', typesPokemon);
+    console.log('typesPokemon[i]:', typesPokemon[i]);
 }
+
 
 
 function cardPokemonHTML(i, picturePokemonUrl) {
     return content.innerHTML += /*html*/`
         <div class="card" style="width: 18rem;">
             <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
-            <div class="card-header">
+            <div class="fw-bold card-header">
                 <div>#${i + 1}</div>
                 <div>${namePokemon[i]}</div>
             </div>
-            <div class="card-body">
-                <p class="card-text">
-                    <span></span>
-                    <span></span>
-                </p>
+            <div class="fw-semibold card-body">
+                <div class="card-text">
+                   ${typesPokemon[i]}  
+                </div>
+                <div class="card-text">
+                   2. type  
+                </div>
             </div>
         </div>
 `;

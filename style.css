@@ -27,3 +27,7 @@ body {
     /* background-color: bisque; */
 }
 
+.card-body{
+    display: flex;
+    justify-content: space-around;
+}
