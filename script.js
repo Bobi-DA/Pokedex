@@ -2,7 +2,7 @@ let namePokemon = [];
 let urlPokemon = [];
 let picturesPokemon = [];
 let typesPokemon = [];
-const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
+const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=40&offset=0";
 
 
 
@@ -32,6 +32,7 @@ async function fetchDataJsonOffset() {
 
         showTypesPokemon(i);
         showPicturePokemon(i);
+        bgColorPokemon(i);
     }
 }
 
@@ -50,19 +51,16 @@ async function showTypesPokemon(i) {
     let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
     let typePokemonUrl = responseAsJson.types;
 
-
-    // console.log('Type 0: ', typePokemonUrl[0].type.name);
+    console.log(typePokemonUrl);
     typesPokemon.push(typePokemonUrl[0].type.name);
-
-    console.log('typesPokemon:', typesPokemon);
-    console.log('typesPokemon[i]:', typesPokemon[i]);
+    // console.log(typesPokemon);
 }
 
 
 
 function cardPokemonHTML(i, picturePokemonUrl) {
     return content.innerHTML += /*html*/`
-        <div class="card" style="width: 18rem;">
+        <div id="card" class="card" style="width: 18rem;">
             <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${i + 1}</div>
@@ -78,4 +76,15 @@ function cardPokemonHTML(i, picturePokemonUrl) {
             </div>
         </div>
 `;
+}
+
+function bgColorPokemon(i) {
+    return switch (typesPokemon(i)) {
+        case gras:
+            document.getElementById('card').
+            break;
+    
+        default:
+            break;
+    }
 }
