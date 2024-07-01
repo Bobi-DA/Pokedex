@@ -2,8 +2,28 @@ let namePokemon = [];
 let urlPokemon = [];
 let picturesPokemon = [];
 let typesPokemon = [];
-const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=40&offset=0";
+const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
 
+const typeColors = {
+    fire: '#F08030',
+    water: '#6890F0',
+    grass: '#78C850',
+    electric: '#F8D030',
+    ice: '#98D8D8',
+    fighting: '#C03028',
+    poison: '#A040A0',
+    ground: '#E0C068',
+    flying: '#A890F0',
+    psychic: '#F85888',
+    bug: '#A8B820',
+    rock: '#B8A038',
+    ghost: '#705898',
+    dragon: '#7038F8',
+    dark: '#705848',
+    steel: '#B8B8D0',
+    fairy: '#EE99AC',
+    normal: '#a8a878'
+};
 
 
 
@@ -30,10 +50,23 @@ async function fetchDataJsonOffset() {
         namePokemon.push(result.name);
         urlPokemon.push(result.url);
 
-        showTypesPokemon(i);
-        showPicturePokemon(i);
-        bgColorPokemon(i);
+        await showTypesPokemon(i);
+        await showPicturePokemon(i);
+
     }
+}
+
+
+async function showTypesPokemon(i) {
+    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API (https://pokeapi.co/api/v2/pokemon/${i}/)
+    let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
+    let typePokemonUrl = responseAsJson.types;
+
+    // console.log('TypePokemonURL: ', typePokemonUrl);
+    typesPokemon.push(typePokemonUrl[0].type.name);
+    // console.log('typesPokemon: ',typesPokemon[i]);
+
+
 }
 
 
@@ -43,27 +76,16 @@ async function showPicturePokemon(i) {
     let picturePokemonUrl = responseAsJson.sprites.other.dream_world.front_default;
 
     cardPokemonHTML(i, picturePokemonUrl);
+    getTypeColor(typesPokemon[i], i);
 }
-
-
-async function showTypesPokemon(i) {
-    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API
-    let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
-    let typePokemonUrl = responseAsJson.types;
-
-    console.log(typePokemonUrl);
-    typesPokemon.push(typePokemonUrl[0].type.name);
-    // console.log(typesPokemon);
-}
-
 
 
 function cardPokemonHTML(i, picturePokemonUrl) {
     return content.innerHTML += /*html*/`
-        <div id="card" class="card" style="width: 18rem;">
+        <div onclick="openDialogPokemon(${i})" id="card${i}" class="card" style="width: 18rem;">
             <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
-                <div>#${i + 1}</div>
+                <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
                 <div>${namePokemon[i]}</div>
             </div>
             <div class="fw-semibold card-body">
@@ -78,13 +100,21 @@ function cardPokemonHTML(i, picturePokemonUrl) {
 `;
 }
 
-function bgColorPokemon(i) {
-    return switch (typesPokemon(i)) {
-        case gras:
-            document.getElementById('card').
-            break;
-    
-        default:
-            break;
-    }
+
+function getTypeColor(type, i) {
+    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
+    console.log(i, bgcolor);
+
+    document.getElementById(`card${i}`).style.backgroundColor = bgcolor;
+
+}
+
+
+function openDialogPokemon(i) {
+
+}
+
+
+function closeDialog() {
+    document.getElementById('bgDialog').classList.add('d-none');
 }

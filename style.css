@@ -44,76 +44,107 @@ body {
     justify-content: space-around;
 }
 
+/*****************DIALOG*************************/
 
-.grass{
-    background-color: #62bc5a;
+.bg-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 99;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding-top: 32px;
+    flex-direction: column;
+}
+
+.dialog {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+
+.d-none {
+    display: none;
+}
+
+
+
+
+/* .grass{
+    background-color: #78c850;
 }
 
 .fire{
-    background-color: #ff421c;
+    background-color: #f08030;
 }
 
 .water{
-    background-color: #1552e2;
+    background-color: #6890f0;
 }
 
 .bug{
-    background-color: #92c12a;
+    background-color: #a8b820;
 }
 
 .normal{
-    background-color: #bbbbaa;
+    background-color: #a8a878;
 }
 
 .poison{
-    background-color: #9553cd;
+    background-color: #a040a0;
 }
 
 .ground{
-    background-color: #a67439;
+    background-color: #e0c068;
 }
 
 .electric{
-    background-color: #ffdc00;
+    background-color: #f8d030;
 }
 
-.fair{
-    background-color: #971944;
+.fairy{
+    background-color: #f0b6bc;
 }
 
 .dark{
-    background-color: #040706;
+    background-color: #705848;
 }
 
 .dragon{
-    background-color: #448b95;
+    background-color: #7038f8;
 }
 
 .fighting{
-    background-color: #974125;
+    background-color: #c03028;
 }
 
 .flying{
-    background-color: #4a677d;
+    background-color: #a890f0;
 }
 
 .ghost{
-    background-color: #33336b;
+    background-color: #705898;
 }
 
 .ice{
-    background-color: #86d2f5;
+    background-color: #98d8d8;
 }
 
 .psychic{
-    background-color: #a12c6a;
+    background-color: #f85888;
 }
 
 .rock{
-    background-color: #48180b;
+    background-color: #b8a038;
 }
 
 .steel{
-    background-color: #5f756d;
+    background-color: #b8b8d0;
 }
-
+ */
