@@ -75,6 +75,8 @@ async function showPicturePokemon(i) {
     let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
     let picturePokemonUrl = responseAsJson.sprites.other.dream_world.front_default;
 
+    picturesPokemon.push(picturePokemonUrl);
+
     cardPokemonHTML(i, picturePokemonUrl);
     getTypeColor(typesPokemon[i], i);
 }
@@ -107,14 +109,69 @@ function getTypeColor(type, i) {
 
     document.getElementById(`card${i}`).style.backgroundColor = bgcolor;
 
+
 }
 
 
 function openDialogPokemon(i) {
+    let dialog = document.getElementById('bgDialog');
+    dialog.classList.remove('d-none');
 
+    document.getElementById('dialogCard').innerHTML = '';
+    document.getElementById('dialogCard').innerHTML += /*html*/`
+        <div class="left-dialog-arrow-container">
+            <img onclick="arrowLeft(${i})" class="arrow" src="./icon/black-arrow-back.png" alt="">
+        </div>
+        <div  class="big-card-container">
+            <img src="${picturesPokemon[i]}" class="bigPictureCard" alt="">
+            <div class="bigCardHeader fw-bold">
+                <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
+                <div>${namePokemon[i]}</div>
+            </div>
+            <div class="bigCardType fw-semibold">
+                <div class="card-text">
+                    ${typesPokemon[i]}  
+                </div>
+                <div class="card-text">
+                    2. type  
+                </div>
+            </div>
+        </div>
+        <div class="right-dialog-arrow-container">
+            <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
+        </div>
+    `
 }
 
 
 function closeDialog() {
     document.getElementById('bgDialog').classList.add('d-none');
+
+}
+
+
+function arrowLeft(i) {
+    let j = --i;
+
+    event.stopPropagation();
+    if (j < 0) {
+        openImage(images.length - 1);
+    } else {
+        openImage(j);
+    }
+
+
+}
+
+
+function arrowRight(i) {
+    let j = ++i;
+
+    event.stopPropagation();
+    if (j >= images.length) {
+        openImage(0);
+    } else {
+        openImage(j);
+
+    }
 }
