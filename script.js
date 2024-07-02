@@ -105,11 +105,8 @@ function cardPokemonHTML(i, picturePokemonUrl) {
 
 function getTypeColor(type, i) {
     let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
-    console.log(i, bgcolor);
 
     document.getElementById(`card${i}`).style.backgroundColor = bgcolor;
-
-
 }
 
 
@@ -117,8 +114,9 @@ function openDialogPokemon(i) {
     let dialog = document.getElementById('bgDialog');
     dialog.classList.remove('d-none');
 
-    document.getElementById('dialogCard').innerHTML = '';
-    document.getElementById('dialogCard').innerHTML += /*html*/`
+    let dialogCard = document.getElementById('dialogCard');
+    dialogCard.innerHTML = '';
+    dialogCard.innerHTML += /*html*/`
         <div class="left-dialog-arrow-container">
             <img onclick="arrowLeft(${i})" class="arrow" src="./icon/black-arrow-back.png" alt="">
         </div>
@@ -140,7 +138,7 @@ function openDialogPokemon(i) {
         <div class="right-dialog-arrow-container">
             <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
         </div>
-    `
+    `;
 }
 
 
@@ -155,9 +153,9 @@ function arrowLeft(i) {
 
     event.stopPropagation();
     if (j < 0) {
-        openImage(images.length - 1);
+        openDialogPokemon(picturesPokemon.length - 1);
     } else {
-        openImage(j);
+        openDialogPokemon(j);
     }
 
 
@@ -168,10 +166,10 @@ function arrowRight(i) {
     let j = ++i;
 
     event.stopPropagation();
-    if (j >= images.length) {
-        openImage(0);
+    if (j >= picturesPokemon.length) {
+        openDialogPokemon(0);
     } else {
-        openImage(j);
+        openDialogPokemon(j);
 
     }
 }
