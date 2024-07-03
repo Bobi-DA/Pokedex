@@ -120,25 +120,54 @@ function openDialogPokemon(i) {
         <div class="left-dialog-arrow-container">
             <img onclick="arrowLeft(${i})" class="arrow" src="./icon/black-arrow-back.png" alt="">
         </div>
-        <div  class="big-card-container">
-            <img src="${picturesPokemon[i]}" class="bigPictureCard" alt="">
-            <div class="bigCardHeader fw-bold">
-                <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                <div>${namePokemon[i]}</div>
+        <div id="bigCardContainer${i}" class="big-card-container" onclick="event.stopPropagation()">
+            <div class="big-card-top">
+                <img src="${picturesPokemon[i]}" class="big-picture-card" alt="">
+                <div class="big-card-type-name">
+                    <div class="big-card-header fw-bold">
+                        <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
+                        <div>${namePokemon[i]}</div>
+                    </div>
+                    <div class="big-card-type fw-semibold">
+                        <div class="card-text">
+                            ${typesPokemon[i]}  
+                        </div>
+                        <div class="card-text">
+                            2. type  
+                        </div>
+                    </div>
+                </div>  
             </div>
-            <div class="bigCardType fw-semibold">
-                <div class="card-text">
-                    ${typesPokemon[i]}  
+            <div class="info-container">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+                    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button> -->
+                    <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup"> -->
+                        <div class="navbar-nav">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link" href="#">Features</a>
+                            <a class="nav-link" href="#">Pricing</a>
+                        </div>
+                    <!-- </div> -->
                 </div>
-                <div class="card-text">
-                    2. type  
-                </div>
-            </div>
+            </nav>
+            </div>  
         </div>
         <div class="right-dialog-arrow-container">
             <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
         </div>
     `;
+    typeColorBigCard(typesPokemon[i], i);
+
+}
+
+function typeColorBigCard(type, i) {
+    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
+
+    document.getElementById(`bigCardContainer${i}`).style.backgroundColor = bgcolor;
 }
 
 
