@@ -1,0 +1,222 @@
+let species = "";
+let eggGroups = "";
+let height = "";
+let weight = "";
+let abilitie1 = "";
+let abilitie2 = "";
+let gender = "";
+let eggCycle = "";
+
+
+
+async function fetchDataJsonPokemonSpecies(i) {
+    let id = i + 1;
+    let response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);         // Holt die Daten von der API
+    let responseAsJson = await response.json();                                             // Wandelt die Antwort in ein JSON-Objekt um.
+
+    aboutTablePokemon(responseAsJson, i);
+}
+
+
+function aboutTablePokemon(responseAsJson, i) {
+    species = responseAsJson.genera[7].genus;
+    eggGroups = responseAsJson.egg_groups[0].name;
+    height = singlePokemon[i].height * 10;
+    weight = singlePokemon[i].weight / 10;
+    abilitie1 = singlePokemon[i].abilities[0].ability.name;
+    abilitie2 = singlePokemon[i].abilities[1]?.ability.name || '';
+    gender = pokemonGenderRate(responseAsJson);
+    eggCycle = responseAsJson.hatch_counter;
+
+}
+
+
+function pokemonGenderRate(responseAsJson) {
+    let gender_rate = responseAsJson.gender_rate;
+    let strGender = "";
+
+    if (gender_rate === -1) {
+        strGender = "genderless";
+    } else {
+        let fPerecent = (gender_rate / 8) * 100;
+        let mPercent = 100 - fPerecent;
+        strGender = `&#9794 ${mPercent}% - &#9792 ${fPerecent}%`
+    }
+    return strGender;
+}
+
+
+
+function typeColorBigCard(type, i) {
+    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
+
+    document.getElementById(`bigCardContainer${i}`).style.backgroundColor = bgcolor;
+}
+
+
+function showAbout() {
+    console.log("about");
+    document.getElementById('aboutCharacter').classList.add('about-table-pokemon');
+}
+
+
+function baseStatsPokemonHTML() {
+    return /*html*/`
+    <div class="table-responsive m-3">
+    <table class="mb-3">
+        <tr>
+            <td class="pe-4">HP</td>
+            <td class="fw-semibold">34</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Attack</td>
+            <td class="fw-semibold">52</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="pe-4">Defense</td>
+            <td class="fw-semibold">86</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Sp. Atk</td>
+            <td class="fw-semibold">45</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Sp. Def</td>
+            <td class="fw-semibold">56</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Speed</td>
+            <td class="pe-3 fw-semibold">15</td>
+            <td class="me-3 w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td class="fw-semibold">77</td>
+            <td class="w-100p">
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+            </td>
+        </tr>
+    </table>
+    <p class="mb-1"><b>Type defenses</b></p>
+    <p>abc</p>
+    </div>
+    `
+}
+
+async function openDialogPokemon(i) {
+    await fetchDataJsonPokemonSpecies(i);
+
+    let dialog = document.getElementById('bgDialog');
+    dialog.classList.remove('d-none');
+
+    let dialogCard = document.getElementById('dialogCard');
+    dialogCard.innerHTML = '';
+    dialogCard.innerHTML += /*html*/`
+        <div class="left-dialog-arrow-container">
+            <img onclick="arrowLeft(${i})" class="arrow" src="./icon/black-arrow-back.png" alt="">
+        </div>
+        <div id="bigCardContainer${i}" class="big-card-container" onclick="event.stopPropagation()">
+            <div class="big-card-top">
+                <img src="${picturesPokemon[i]}" class="big-picture-card" alt="">
+                <div class="big-card-type-name">
+                    <div class="big-card-header fw-bold">
+                        <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
+                        <div>${namePokemon[i]}</div>
+                    </div>
+                    <div class="big-card-type fw-semibold">
+                        <div class="card-text">
+                            ${typesPokemon1[i]}  
+                        </div>
+                        <div class="card-text">
+                            2. type  
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class="info-container p-3">
+                <ul class="">
+                    <li><a href="#about" onclick="showAbout()">About</a></li>
+                    <li><a href="#baseStats" onclick="showBaseStats()">Base Stats</a></li>
+                    <li><a href="#evolution">Evolution</a></li>
+                    <li><a href="#moves">Moves</a></li>
+                </ul>
+
+                <div id="aboutCharacter">
+                    <table class="about-table-pokemon">
+                        <tr>
+                            <td>Species</td>
+                            <td class="fw-semibold">${species}</td>
+                        </tr>
+                        <tr>
+                            <td>Height</td>
+                            <td class="fw-semibold">${height} cm</td>
+                        </tr>
+                        <tr>
+                            <td>Weight</td>
+                            <td class="fw-semibold">${weight} kg</td>
+                        </tr>
+                        <tr>
+                            <td>Abilities</td>
+                            <td class="fw-semibold">${abilitie1}, ${abilitie2}</td>
+                        </tr>
+                        <tr>
+                            <td class="h5"><b>Breeding</b></td>
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td class="fw-semibold">${gender}</td>
+                        </tr>
+                        <tr>
+                            <td>Egg Groups</td>
+                            <td class="fw-semibold">${eggGroups}</td>
+                        </tr>
+                        <tr>
+                            <td>Egg Cycle</td>
+                            <td class="fw-semibold">${eggCycle}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="baseStatsCharcter">
+                <!-- ${baseStatsPokemonHTML()} -->
+                </div>
+
+            </div>  
+        </div>
+        <div class="right-dialog-arrow-container">
+            <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
+        </div>
+    `;
+    typeColorBigCard(typesPokemon1[i], i);
+}

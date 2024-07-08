@@ -1,8 +1,10 @@
 let namePokemon = [];
-let urlPokemon = [];
+let urlPokemon = [];    //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
 let picturesPokemon = [];
-let typesPokemon = [];
-const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=0";
+let typesPokemon1 = [];
+let typesPokemon2 = [];
+let singlePokemon = [];     //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
+const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
 const typeColors = {
     fire: '#F08030',
@@ -26,8 +28,6 @@ const typeColors = {
 };
 
 
-
-
 function init() {       // initialisierung
     fetchDataJsonOffset();
     render();
@@ -38,6 +38,7 @@ function render() {
     let content = document.getElementById('content');
     content.innerHTML = '';
 }
+
 
 
 async function fetchDataJsonOffset() {
@@ -52,7 +53,7 @@ async function fetchDataJsonOffset() {
 
         await showTypesPokemon(i);
         await showPicturePokemon(i);
-
+        await fetchDataJsonPokemonSpecies(i);
     }
 }
 
@@ -61,12 +62,10 @@ async function showTypesPokemon(i) {
     let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API (https://pokeapi.co/api/v2/pokemon/${i}/)
     let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
     let typePokemonUrl = responseAsJson.types;
+    singlePokemon.push(responseAsJson);
 
-    // console.log('TypePokemonURL: ', typePokemonUrl);
-    typesPokemon.push(typePokemonUrl[0].type.name);
-    // console.log('typesPokemon: ',typesPokemon[i]);
-
-
+    typesPokemon1.push(typePokemonUrl[0].type.name);
+    typesPokemon2.push(typePokemonUrl[1]?.type.name || '');
 }
 
 
@@ -77,25 +76,25 @@ async function showPicturePokemon(i) {
 
     picturesPokemon.push(picturePokemonUrl);
 
-    cardPokemonHTML(i, picturePokemonUrl);
-    getTypeColor(typesPokemon[i], i);
+    smallCardPokemonHTML(i, picturePokemonUrl);
+    getTypeColor(typesPokemon1[i], i);
 }
 
 
-function cardPokemonHTML(i, picturePokemonUrl) {
-    return content.innerHTML += /*html*/`
+function smallCardPokemonHTML(i, picturePokemonUrl) {
+    content.innerHTML += /*html*/`
         <div onclick="openDialogPokemon(${i})" id="card${i}" class="card" style="width: 18rem;">
             <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                <div>${namePokemon[i]}</div>
+                <div>${namePokemon[i].toUpperCase()}</div>
             </div>
             <div class="fw-semibold card-body">
                 <div class="card-text">
-                   ${typesPokemon[i]}  
+                   ${typesPokemon1[i]}  
                 </div>
                 <div class="card-text">
-                   2. type  
+                ${typesPokemon2[i]}  
                 </div>
             </div>
         </div>
@@ -107,67 +106,6 @@ function getTypeColor(type, i) {
     let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
 
     document.getElementById(`card${i}`).style.backgroundColor = bgcolor;
-}
-
-
-function openDialogPokemon(i) {
-    let dialog = document.getElementById('bgDialog');
-    dialog.classList.remove('d-none');
-
-    let dialogCard = document.getElementById('dialogCard');
-    dialogCard.innerHTML = '';
-    dialogCard.innerHTML += /*html*/`
-        <div class="left-dialog-arrow-container">
-            <img onclick="arrowLeft(${i})" class="arrow" src="./icon/black-arrow-back.png" alt="">
-        </div>
-        <div id="bigCardContainer${i}" class="big-card-container" onclick="event.stopPropagation()">
-            <div class="big-card-top">
-                <img src="${picturesPokemon[i]}" class="big-picture-card" alt="">
-                <div class="big-card-type-name">
-                    <div class="big-card-header fw-bold">
-                        <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                        <div>${namePokemon[i]}</div>
-                    </div>
-                    <div class="big-card-type fw-semibold">
-                        <div class="card-text">
-                            ${typesPokemon[i]}  
-                        </div>
-                        <div class="card-text">
-                            2. type  
-                        </div>
-                    </div>
-                </div>  
-            </div>
-            <div class="info-container">
-            <nav class="navbar navbar-expand-lg bg-body-tertiary">
-                <div class="container-fluid">
-                    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-                    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button> -->
-                    <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup"> -->
-                        <div class="navbar-nav">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
-                            <a class="nav-link" href="#">Features</a>
-                            <a class="nav-link" href="#">Pricing</a>
-                        </div>
-                    <!-- </div> -->
-                </div>
-            </nav>
-            </div>  
-        </div>
-        <div class="right-dialog-arrow-container">
-            <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
-        </div>
-    `;
-    typeColorBigCard(typesPokemon[i], i);
-
-}
-
-function typeColorBigCard(type, i) {
-    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
-
-    document.getElementById(`bigCardContainer${i}`).style.backgroundColor = bgcolor;
 }
 
 
@@ -183,8 +121,11 @@ function arrowLeft(i) {
     event.stopPropagation();
     if (j < 0) {
         openDialogPokemon(picturesPokemon.length - 1);
+        fetchDataJsonPokemonSpecies(picturesPokemon.length - 1);
+
     } else {
         openDialogPokemon(j);
+        fetchDataJsonPokemonSpecies(j);
     }
 
 
@@ -196,9 +137,12 @@ function arrowRight(i) {
 
     event.stopPropagation();
     if (j >= picturesPokemon.length) {
+        fetchDataJsonPokemonSpecies(0);
         openDialogPokemon(0);
-    } else {
-        openDialogPokemon(j);
 
+    } else {
+        fetchDataJsonPokemonSpecies(j);
+        openDialogPokemon(j);
     }
 }
+
