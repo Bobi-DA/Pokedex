@@ -11,6 +11,7 @@
         crossorigin="anonymous"></script>
     <script src="script.js" defer></script>
     <script src="bigCard.js" defer></script>
+    <script src="loadMoreBtn.js"></script>
     <link rel="stylesheet" href="style.css">
     <title>Pokedex</title>
 </head>
@@ -25,7 +26,9 @@
         <div id="dialogCard" class="dialog-card"></div>
 
     </div>
-    <button id="loadButton" class="load-button" onclick="loadPokemons()">Load</button>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-primary load-more-btn" type="button" id="loadMoreBtn" onclick="loadMoreButton()">load more</button>
+      </div>
 </body>
 
 </html>

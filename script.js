@@ -4,7 +4,8 @@ let picturesPokemon = [];
 let typesPokemon1 = [];
 let typesPokemon2 = [];
 let singlePokemon = [];     //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
-const OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
+let account = 20;
+let OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
 
 const typeColors = {
     fire: '#F08030',
@@ -109,40 +110,12 @@ function getTypeColor(type, i) {
 }
 
 
-function closeDialog() {
-    document.getElementById('bgDialog').classList.add('d-none');
 
+
+async function loadMoreButton() {
+    account = account + 10;
+    limit = account-10;
+    OFFSET = `https://pokeapi.co/api/v2/pokemon?limit=${account}&offset=${limit}`;
+
+    init();
 }
-
-
-function arrowLeft(i) {
-    let j = --i;
-
-    event.stopPropagation();
-    if (j < 0) {
-        openDialogPokemon(picturesPokemon.length - 1);
-        fetchDataJsonPokemonSpecies(picturesPokemon.length - 1);
-
-    } else {
-        openDialogPokemon(j);
-        fetchDataJsonPokemonSpecies(j);
-    }
-
-
-}
-
-
-function arrowRight(i) {
-    let j = ++i;
-
-    event.stopPropagation();
-    if (j >= picturesPokemon.length) {
-        fetchDataJsonPokemonSpecies(0);
-        openDialogPokemon(0);
-
-    } else {
-        fetchDataJsonPokemonSpecies(j);
-        openDialogPokemon(j);
-    }
-}
-

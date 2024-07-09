@@ -55,14 +55,20 @@ function typeColorBigCard(type, i) {
 
 
 function showAbout() {
-    console.log("about");
-    document.getElementById('aboutCharacter').classList.add('about-table-pokemon');
+    document.getElementById('aboutCharacter').classList.remove('d-none');
+    document.getElementById('baseStatsCharacter').classList.add('d-none');
+
 }
 
+function showBaseStats() {
+    document.getElementById('baseStatsCharacter').classList.remove('d-none');
+    document.getElementById('aboutCharacter').classList.add('d-none');
+
+}
 
 function baseStatsPokemonHTML() {
     return /*html*/`
-    <div class="table-responsive m-3">
+    <div class="table-responsive m-2">
     <table class="mb-3">
         <tr>
             <td class="pe-4">HP</td>
@@ -86,7 +92,7 @@ function baseStatsPokemonHTML() {
             <td class="pe-4">Defense</td>
             <td class="fw-semibold">86</td>
             <td class="me-3 w-100p">
-            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress" role="progressbar">
                 <div class="progress-bar" style="width: 25%"></div>
             </div>
             </td>
@@ -137,6 +143,7 @@ function baseStatsPokemonHTML() {
 async function openDialogPokemon(i) {
     await fetchDataJsonPokemonSpecies(i);
 
+
     let dialog = document.getElementById('bgDialog');
     dialog.classList.remove('d-none');
 
@@ -154,12 +161,12 @@ async function openDialogPokemon(i) {
                         <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
                         <div>${namePokemon[i]}</div>
                     </div>
-                    <div class="big-card-type fw-semibold">
+                    <div class="big-card-type fw-semibold mb-3">
                         <div class="card-text">
                             ${typesPokemon1[i]}  
                         </div>
                         <div class="card-text">
-                            2. type  
+                            ${typesPokemon2[i]}  
                         </div>
                     </div>
                 </div>  
@@ -171,45 +178,113 @@ async function openDialogPokemon(i) {
                     <li><a href="#evolution">Evolution</a></li>
                     <li><a href="#moves">Moves</a></li>
                 </ul>
-
-                <div id="aboutCharacter">
+<!--------------------------------------------------------------------------------------->
+                <div id="aboutCharacter" class="about-character">
                     <table class="about-table-pokemon">
                         <tr>
-                            <td>Species</td>
+                            <td class="w-90">Species</td>
                             <td class="fw-semibold">${species}</td>
                         </tr>
                         <tr>
-                            <td>Height</td>
+                            <td class="w-90">Height</td>
                             <td class="fw-semibold">${height} cm</td>
                         </tr>
                         <tr>
-                            <td>Weight</td>
+                            <td class="w-90">Weight</td>
                             <td class="fw-semibold">${weight} kg</td>
                         </tr>
                         <tr>
-                            <td>Abilities</td>
+                            <td class="w-90">Abilities</td>
                             <td class="fw-semibold">${abilitie1}, ${abilitie2}</td>
                         </tr>
                         <tr>
                             <td class="h5"><b>Breeding</b></td>
                         </tr>
                         <tr>
-                            <td>Gender</td>
+                            <td class="w-90">Gender</td>
                             <td class="fw-semibold">${gender}</td>
                         </tr>
                         <tr>
-                            <td>Egg Groups</td>
+                            <td class="w-90">Egg Groups</td>
                             <td class="fw-semibold">${eggGroups}</td>
                         </tr>
                         <tr>
-                            <td>Egg Cycle</td>
+                            <td class="w-90">Egg Cycle</td>
                             <td class="fw-semibold">${eggCycle}</td>
                         </tr>
                     </table>
                 </div>
-
-                <div id="baseStatsCharcter">
-                <!-- ${baseStatsPokemonHTML()} -->
+<!------------------------------------------------------------------------------------------------------------->
+                <div id="baseStatsCharacter" class="h-100 d-none">
+                <div class="table-responsive m-2 h-100">
+                    <table class="table-baseStats mb-3">
+                        <tr>
+                            <td class="pe-4">HP</td>
+                            <td class="fw-semibold">34</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Attack</td>
+                            <td class="fw-semibold">52</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pe-4">Defense</td>
+                            <td class="fw-semibold">86</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sp. Atk</td>
+                            <td class="fw-semibold">45</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sp. Def</td>
+                            <td class="fw-semibold">56</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Speed</td>
+                            <td class="pe-3 fw-semibold">15</td>
+                            <td class="me-3 w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td class="fw-semibold">77</td>
+                            <td class="w-100p">
+                            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: 25%"></div>
+                            </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="mb-1"><b>Type defenses</b></p>
+                    <p>abc</p>
+                    </div>
                 </div>
 
             </div>  
@@ -219,4 +294,42 @@ async function openDialogPokemon(i) {
         </div>
     `;
     typeColorBigCard(typesPokemon1[i], i);
+}
+
+
+function closeDialog() {
+    document.getElementById('bgDialog').classList.add('d-none');
+
+}
+
+
+function arrowLeft(i) {
+    let j = --i;
+
+    event.stopPropagation();
+    if (j < 0) {
+        openDialogPokemon(picturesPokemon.length - 1);
+        fetchDataJsonPokemonSpecies(picturesPokemon.length - 1);
+
+    } else {
+        openDialogPokemon(j);
+        fetchDataJsonPokemonSpecies(j);
+    }
+
+
+}
+
+
+function arrowRight(i) {
+    let j = ++i;
+
+    event.stopPropagation();
+    if (j >= picturesPokemon.length) {
+        fetchDataJsonPokemonSpecies(0);
+        openDialogPokemon(0);
+
+    } else {
+        fetchDataJsonPokemonSpecies(j);
+        openDialogPokemon(j);
+    }
 }
