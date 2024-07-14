@@ -11,13 +11,21 @@
         crossorigin="anonymous"></script>
     <script src="script.js" defer></script>
     <script src="bigCard.js" defer></script>
-    <script src="loadMoreBtn.js"></script>
+    <link rel="shortcut icon" href="./img/pokemon.jpg" type="image/x-icon">
+    <!-- <script src="loadMoreBtn.js"></script> -->
     <link rel="stylesheet" href="style.css">
     <title>Pokedex</title>
 </head>
 
 <body onload="init()">
-    <h1>POKEMON</h1>
+    <div class="bg-loadingSpinner d-none" id="bgLoadSpinner">
+        <div class="loader" id="loadingSpinner"></div>
+    </div>
+
+    <div class="header">
+        <h1>POKEMON</h1>
+        <input type="search" name="search" id="search" onkeypress="filterPokemon()" placeholder="searching...">
+    </div>
     <div id="content">
         <!--card-->
     </div>
@@ -27,8 +35,8 @@
 
     </div>
     <div class="d-grid gap-2 col-6 mx-auto">
-        <button class="btn btn-primary load-more-btn" type="button" id="loadMoreBtn" onclick="loadMoreButton()">load more</button>
-      </div>
-</body>
+        <button class="btn btn-primary load-more-btn" type="button" id="loadMoreBtn" onclick="loadMoreButton()">load
+            more</button>
+    </div>
 
 </html>
