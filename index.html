@@ -12,7 +12,6 @@
     <script src="script.js" defer></script>
     <script src="bigCard.js" defer></script>
     <link rel="shortcut icon" href="./img/pokemon.jpg" type="image/x-icon">
-    <!-- <script src="loadMoreBtn.js"></script> -->
     <link rel="stylesheet" href="style.css">
     <title>Pokedex</title>
 </head>
@@ -24,7 +23,10 @@
 
     <div class="header">
         <h1>POKEMON</h1>
-        <input type="search" name="search" id="search" onkeypress="filterPokemon()" placeholder="searching...">
+        <input type="search" name="search" id="search" oninput="filterPokemon()" placeholder="searching..."  minlength=3 required>
+    </div>
+    <div id="filterListPokemon">
+
     </div>
     <div id="content">
         <!--card-->
@@ -34,7 +36,7 @@
         <div id="dialogCard" class="dialog-card"></div>
 
     </div>
-    <div class="d-grid gap-2 col-6 mx-auto">
+    <div class="d-grid gap-2 col-6 mx-auto btn-container">
         <button class="btn btn-primary load-more-btn" type="button" id="loadMoreBtn" onclick="loadMoreButton()">load
             more</button>
     </div>

@@ -1,4 +1,4 @@
-// let allPokemons = [];
+let allPokemons = [];
 let allPokemonsNameIndex = [];
 let urlPokemon = [];    //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
 let picturesPokemon = [];
@@ -50,7 +50,7 @@ async function fetchAllPokemonData() {
 
     for (let i = 0; i < names.length; i++) {
         let name = names[i]['name'];
-        // allPokemons.push(name); // Pokémon zum Array hinzufügen
+        allPokemons.push(name); // Pokémon zum Array hinzufügen
         allPokemonsNameIndex.push({
             'name': name,
             'index': i,
@@ -109,7 +109,7 @@ function smallCardPokemonHTML(i) {
             <img src="${pictureURL}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                <div>${allPokemonsNameIndex[i]['name'].toUpperCase()}</div>
+                <div>${allPokemons[i].toUpperCase()}</div>
             </div>
             <div class="fw-semibold card-body">
                 <div class="card-text">
@@ -147,45 +147,19 @@ async function loadMoreButton() {
 }
 
 async function filterPokemon() {
-    let search = document.getElementById('search').value.toLowerCase().trim();
+    let search = document.getElementById('search').value.toLowerCase();
+    let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
 
-    if (search.length >= 2) {  // Nur filtern, wenn mindestens 3 Zeichen eingegeben wurden
-        let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
-
-        // console.log(search);
+    if (search.length >= 3) {
         render();
-
-        for (let pokemon of names) {
-            // console.log(pokemon.name);
-            // console.log(pokemon.index);
+        names.forEach(async pokemon => {
+            console.log(pokemon.name);
+            console.log(pokemon.index);
 
             await showPicturePokemon(pokemon.index);
-        }
-    } if (search.length == 0) {
-        init();
+        });
     }
 }
-
-// async function filterPokemon() {
-//     let search = document.getElementById('search').value.toLowerCase().trim();
-//     let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
-
-//     if (search.length >= 2) {
-
-//         console.log(search);
-//         render();
-
-//         names.forEach(async pokemon => {
-//             // console.log(pokemon.name);
-//             // console.log(pokemon.index);
-
-//             await showPicturePokemon(pokemon.index);
-//         });
-//     }else{
-//         await init();
-//     }
-
-// }
 
 // async function filterPokemon() {
 //     let search = document.getElementById('search').value.toLowerCase();

@@ -1,5 +1,5 @@
-// let allPokemons = [];
-let allPokemonsNameIndex = [];
+let allPokemon = [];
+let namePokemon = [];
 let urlPokemon = [];    //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
 let picturesPokemon = [];
 let typesPokemon1 = [];
@@ -33,8 +33,8 @@ const typeColors = {
 async function init() {       // initialisierung
     // fetchPokemonData();
     render();
-    await fetchAllPokemonData();
     await fetchDataJsonOffset();
+    await fetchAllPokemonData();
 }
 
 
@@ -50,11 +50,8 @@ async function fetchAllPokemonData() {
 
     for (let i = 0; i < names.length; i++) {
         let name = names[i]['name'];
-        // allPokemons.push(name); // Pokémon zum Array hinzufügen
-        allPokemonsNameIndex.push({
-            'name': name,
-            'index': i,
-        }); // Pokémon zum Array hinzufügen
+        allPokemon.push(name); // Pokémon zum Array hinzufügen
+
     }
 }
 
@@ -68,7 +65,7 @@ async function fetchDataJsonOffset() {
 
     for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        // namePokemon.push(result.name);
+        namePokemon.push(result.name);
         urlPokemon.push(result.url);
 
         await showTypesPokemon(i);
@@ -80,7 +77,7 @@ async function fetchDataJsonOffset() {
 
 
 async function showTypesPokemon(i) {
-    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API (https://pokeapi.co/api/v2/pokemon/ID/)
+    let response = await fetch(urlPokemon[i]);      // Holt die Daten von der API (https://pokeapi.co/api/v2/pokemon/${i}/)
     let responseAsJson = await response.json();    // Wandelt die Antwort in ein JSON-Objekt um.
     let typePokemonUrl = responseAsJson.types;
     singlePokemonJson.push(responseAsJson);
@@ -97,19 +94,18 @@ async function showPicturePokemon(i) {
 
     picturesPokemon.push(picturePokemonUrl);
 
-    smallCardPokemonHTML(i);
+    smallCardPokemonHTML(i, picturePokemonUrl);
     getTypeColor(typesPokemon1[i], i);
 }
 
 
-function smallCardPokemonHTML(i) {
-    let pictureURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${i + 1}.svg`;
+function smallCardPokemonHTML(i, picturePokemonUrl) {
     content.innerHTML += /*html*/`
         <div onclick="openDialogPokemon(${i})" id="card${i}" class="card" style="width: 18rem;">
-            <img src="${pictureURL}" class="card-img-top" alt="Pokemon-Picture">
+            <img src="${picturePokemonUrl}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                <div>${allPokemonsNameIndex[i]['name'].toUpperCase()}</div>
+                <div>${namePokemon[i].toUpperCase()}</div>
             </div>
             <div class="fw-semibold card-body">
                 <div class="card-text">
@@ -146,58 +142,9 @@ async function loadMoreButton() {
     await init();
 }
 
-async function filterPokemon() {
-    let search = document.getElementById('search').value.toLowerCase().trim();
+function filterPokemon() {
+    let search = document.getElementById('search').value.toLowerCase();
 
-    if (search.length >= 2) {  // Nur filtern, wenn mindestens 3 Zeichen eingegeben wurden
-        let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
-
-        // console.log(search);
-        render();
-
-        for (let pokemon of names) {
-            // console.log(pokemon.name);
-            // console.log(pokemon.index);
-
-            await showPicturePokemon(pokemon.index);
-        }
-    } if (search.length == 0) {
-        init();
-    }
+    let name = allPokemon.filter(pokemon => pokemon.toLowerCase().includes(search));
+    console.log(name);
 }
-
-// async function filterPokemon() {
-//     let search = document.getElementById('search').value.toLowerCase().trim();
-//     let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
-
-//     if (search.length >= 2) {
-
-//         console.log(search);
-//         render();
-
-//         names.forEach(async pokemon => {
-//             // console.log(pokemon.name);
-//             // console.log(pokemon.index);
-
-//             await showPicturePokemon(pokemon.index);
-//         });
-//     }else{
-//         await init();
-//     }
-
-// }
-
-// async function filterPokemon() {
-//     let search = document.getElementById('search').value.toLowerCase();
-//     let names = allPokemonsName.filter(pokemon => pokemon.name.toLowerCase().includes(search));
-
-//     if (search) {
-//         render();
-//         for (let pokemon of names) {
-//             console.log(pokemon.name);
-//             console.log(pokemon.index);
-
-//             await showPicturePokemon(pokemon.index);
-//         }
-//     }
-// }
