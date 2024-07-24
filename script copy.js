@@ -1,12 +1,13 @@
-let allPokemons = [];
-let allPokemonsNameIndex = [];
+// let allPokemons = [];
+let pokemonsNameIndex = [];
 let urlPokemon = [];    //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
 let picturesPokemon = [];
 let typesPokemon1 = [];
 let typesPokemon2 = [];
 let singlePokemonJson = [];     //https://pokeapi.co/api/v2/pokemon/{id}/ - ID fängt bei 1 an
-let account = 20;
-let OFFSET = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0";
+let limit = 20;
+let OFFSET_ = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=20";
+let OFFSETLoad = "";
 
 const typeColors = {
     fire: '#F08030',
@@ -31,51 +32,62 @@ const typeColors = {
 
 
 async function init() {       // initialisierung
-    // fetchPokemonData();
     render();
-    await fetchAllPokemonData();
     await fetchDataJsonOffset();
 }
 
 
-function render() {
+ function render() {
     let content = document.getElementById('content');
     content.innerHTML = '';
 }
 
-async function fetchAllPokemonData() {
-    let response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0`); // API-Aufruf für Pokémon-Daten
-    let pokemon = await response.json(); // Antwort in JSON-Objekt umwandeln
-    let names = pokemon['results'];
+// async function fetchAllPokemonData() {
+//     let response = await fetch(OFFSET); // API-Aufruf für Pokémon-Daten
+//     let pokemon = await response.json(); // Antwort in JSON-Objekt umwandeln
+//     let names = pokemon['results'];
 
-    for (let i = 0; i < names.length; i++) {
-        let name = names[i]['name'];
-        allPokemons.push(name); // Pokémon zum Array hinzufügen
-        allPokemonsNameIndex.push({
-            'name': name,
-            'index': i,
-        }); // Pokémon zum Array hinzufügen
-    }
-}
+//     for (let i = 0; i < names.length; i++) {
+//         let name = names[i]['name'];
+//         pokemonsNameIndex.push({
+//             'name': name,
+//             'index': i,
+//         }); // Pokémon zum Array hinzufügen
+//     }
+// }
 
 
 async function fetchDataJsonOffset() {
-    let response = await fetch(OFFSET);         // Holt die Daten von der API
+    let response = await fetch(OFFSET_);         // Holt die Daten von der API
     let responseAsJson = await response.json(); // Wandelt die Antwort in ein JSON-Objekt um.
     let results = responseAsJson['results'];    // Speichert das Ergebnis in der Variable - namePoke = (5) [{…}, {…}, {…}, {…}, {…}]
 
     document.getElementById('bgLoadSpinner').classList.remove('d-none');
 
     for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        // namePokemon.push(result.name);
+        let result = results[i];
+        let name = results[i]['name'];
+
         urlPokemon.push(result.url);
 
+        await fetchPokemonsNameAndId(i, name);
         await showTypesPokemon(i);
         await showPicturePokemon(i);
         await fetchDataJsonPokemonSpecies(i);
     }
     document.getElementById('bgLoadSpinner').classList.add('d-none');
+}
+
+
+async function fetchPokemonsNameAndId(i, name) {
+    i += 1;
+    let response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`);         // Holt die Daten von der API
+    let responseAsJson = await response.json(); // Wandelt die Antwort in ein JSON-Objekt um.
+    pokemonsNameIndex.push({
+        'name': name,
+        'index': i,
+    });
+
 }
 
 
@@ -87,6 +99,7 @@ async function showTypesPokemon(i) {
 
     typesPokemon1.push(typePokemonUrl[0].type.name);
     typesPokemon2.push(typePokemonUrl[1]?.type.name || '');
+
 }
 
 
@@ -103,13 +116,13 @@ async function showPicturePokemon(i) {
 
 
 function smallCardPokemonHTML(i) {
-    let pictureURL = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${i + 1}.svg`;
+
     content.innerHTML += /*html*/`
         <div onclick="openDialogPokemon(${i})" id="card${i}" class="card" style="width: 18rem;">
-            <img src="${pictureURL}" class="card-img-top" alt="Pokemon-Picture">
+            <img src="${picturesPokemon[i]}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                <div>${allPokemons[i].toUpperCase()}</div>
+                <div>${pokemonsNameIndex[i]['name'].toUpperCase()}</div>
             </div>
             <div class="fw-semibold card-body">
                 <div class="card-text">
@@ -131,47 +144,53 @@ function getTypeColor(type, i) {
 }
 
 
-
-
 async function loadMoreButton() {
     singlePokemonJson = [];
     typesPokemon1 = [];
     typesPokemon2 = [];
     picturesPokemon = [];
 
-    account = account + 10;
-    limit = account - 10;
-    OFFSET = `https://pokeapi.co/api/v2/pokemon?limit=${account}&offset=${limit}`;
-
+    limit = limit + 10;
+    let offset = limit - 10;
+    OFFSET_ = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
     await init();
 }
 
-async function filterPokemon() {
-    let search = document.getElementById('search').value.toLowerCase();
-    let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
 
-    if (search.length >= 3) {
+async function filterPokemon() {
+    let search = document.getElementById('search').value.toLowerCase().trim();
+
+    if (search.length >= 2) {  // Nur filtern, wenn mindestens 2 Zeichen eingegeben wurden
+        let names = pokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
+
         render();
-        names.forEach(async pokemon => {
-            console.log(pokemon.name);
-            console.log(pokemon.index);
+
+        for (let pokemon of names) {
 
             await showPicturePokemon(pokemon.index);
-        });
+        }
+    } if (search.length == 0) {
+        await init();
     }
 }
 
 // async function filterPokemon() {
-//     let search = document.getElementById('search').value.toLowerCase();
-//     let names = allPokemonsName.filter(pokemon => pokemon.name.toLowerCase().includes(search));
+//     let search = document.getElementById('search').value.toLowerCase().trim();
+//     let names = allPokemonsNameIndex.filter(pokemon => pokemon.name.toLowerCase().includes(search));
 
-//     if (search) {
+//     if (search.length >= 2) {
+
+//         console.log(search);
 //         render();
-//         for (let pokemon of names) {
-//             console.log(pokemon.name);
-//             console.log(pokemon.index);
+
+//         names.forEach(async pokemon => {
+//             // console.log(pokemon.name);
+//             // console.log(pokemon.index);
 
 //             await showPicturePokemon(pokemon.index);
-//         }
+//         });
+//     }else{
+//         await init();
 //     }
+
 // }

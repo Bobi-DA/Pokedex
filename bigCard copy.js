@@ -127,7 +127,7 @@ async function openDialogPokemon(i) {
                     <div>
                         <div class="big-card-header fw-bold">
                             <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                            <div>${namePokemon[i].toUpperCase()}</div>
+                            <div>${pokemonsNameIndex[i]['name'].toUpperCase()}</div>
                         </div>
                         <div class="big-card-type fw-semibold mb-3">
                             <div class="card-text">
