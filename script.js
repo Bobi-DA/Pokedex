@@ -1,6 +1,6 @@
 let allPokemons = [];
 let limit = 20;
-let OFFSET_ = "https://pokeapi.co/api/v2/pokemon/";
+let OFFSET = "https://pokeapi.co/api/v2/pokemon/";
 
 
 const typeColors = {
@@ -28,6 +28,7 @@ const typeColors = {
 async function init() {       // initialisierung
     render();
     await fetchDataJsonOffset();
+
 }
 
 
@@ -38,7 +39,7 @@ function render() {
 
 
 async function fetchDataJsonOffset() {
-    let response = await fetch(OFFSET_);         // Holt die Daten von der API
+    let response = await fetch(OFFSET);         // Holt die Daten von der API
     let responseAsJson = await response.json(); // Wandelt die Antwort in ein JSON-Objekt um.
     let results = responseAsJson['results'];    // Speichert das Ergebnis in der Variable - namePoke = (5) [{…}, {…}, {…}, {…}, {…}]
 
@@ -46,7 +47,7 @@ async function fetchDataJsonOffset() {
 
     for (let i = 0; i < results.length; i++) {
         await fetchDataPokemon(i);
-        await smallCardPokemonHTML(i);
+
     }
     document.getElementById('bgLoadSpinner').classList.add('d-none');
 }
@@ -56,39 +57,31 @@ async function fetchDataPokemon(i) {
     let response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i + 1}/`);         // Holt die Daten von der API
     let responseAsJson = await response.json(); // Wandelt die Antwort in ein JSON-Objekt um.
 
-    let name = responseAsJson['name'];
-    let id = responseAsJson['id'];
-    let picture = responseAsJson['sprites']['other']['dream_world']['front_default'];
-    let type_1 = responseAsJson['types']['0']['type']['name'];
-    let type_2 = responseAsJson['types']['1']?.['type']['name'] || '';
-
-    allPokemons.push(
-        {
-            "name": name,
-            "id": id,
-            "picture": picture,
-            "types": [type_1, type_2]
-        }
-    )
-
+    allPokemons.push(responseAsJson);
+    smallCardPokemonHTML(i);
+    getTypeColor(allPokemons, i);
+    await fetchDataJsonPokemonSpecies(i);
 }
 
 
-async function smallCardPokemonHTML(i) {
+function smallCardPokemonHTML(i) {
+    let picture = allPokemons[i]['sprites']['other']['dream_world']['front_default'];
+    let type_1 = allPokemons[i]['types']['0']['type']['name'];
+    let type_2 = allPokemons[i]['types']['1']?.['type']['name'] || '';
 
     content.innerHTML += /*html*/`
         <div onclick="openDialogPokemon(${i})" id="card${i}" class="card" style="width: 18rem;">
-            <img src="${allPokemons[i]['picture']}" class="card-img-top" alt="Pokemon-Picture">
+            <img src="${picture}" class="card-img-top" alt="Pokemon-Picture">
             <div class="fw-bold card-header">
                 <div>#${allPokemons[i]['id']}</div>            <!--ID faengt bei 1 an--> 
                 <div>${allPokemons[i]['name']}</div>
             </div>
             <div class="fw-semibold card-body">
                 <div class="card-text">
-                   ${allPokemons[i]['types'][0]}  
+                    ${type_1}  
                 </div>
                 <div class="card-text">
-                ${allPokemons[i]['types'][1]}  
+                    ${type_2}  
                 </div>
             </div>
         </div>
@@ -97,21 +90,17 @@ async function smallCardPokemonHTML(i) {
 
 
 function getTypeColor(type, i) {
-    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
-
+    let color = type[i]['types']['0']['type']['name'];
+    let bgcolor = typeColors[color.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
     document.getElementById(`card${i}`).style.backgroundColor = bgcolor;
 }
 
 
 async function loadMoreButton() {
-    singlePokemonJson = [];
-    typesPokemon1 = [];
-    typesPokemon2 = [];
-    picturesPokemon = [];
 
     limit = limit + 10;
     let offset = limit - 10;
-    OFFSET_ = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+    OFFSET = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
     await init();
 }
 

@@ -1,57 +1,30 @@
-let species = "";
-let eggGroups = "";
-let height = "";
-let weight = "";
-let abilitie1 = "";
-let abilitie2 = "";
-let gender = "";
-let eggCycle = "";
-
-let hp = "";
-let attack = "";
-let defense = "";
-let spAtk = "";
-let spDef = "";
-let speed = "";
-let total = "";
-let totalBar = "";
-
+responsePokemonSpecies = [];
 
 async function fetchDataJsonPokemonSpecies(i) {
-    let id = i + 1;
-    let response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);         // Holt die Daten von der API
-    let responseAsJson = await response.json();                                             // Wandelt die Antwort in ein JSON-Objekt um.
+    let response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${i + 1}`);         // Holt die Daten von der API
+    let responseAsJsonSpecies = await response.json();                                             // Wandelt die Antwort in ein JSON-Objekt um.
 
-    await aboutTablePokemon(responseAsJson, i);
-    await baseStatsTablePokemon(i);
-}
-
-async function aboutTablePokemon(responseAsJson, i) {
-    species = responseAsJson.genera[7].genus;
-    eggGroups = responseAsJson.egg_groups[0].name;
-    height = singlePokemonJson[i].height * 10;
-    weight = singlePokemonJson[i].weight / 10;
-    abilitie1 = singlePokemonJson[i].abilities[0].ability.name;
-    abilitie2 = singlePokemonJson[i].abilities[1]?.ability.name || '';
-    gender = pokemonGenderRate(responseAsJson);
-    eggCycle = responseAsJson.hatch_counter;
+    responsePokemonSpecies.push(responseAsJsonSpecies);
+    gender = pokemonGenderRate(responsePokemonSpecies, i);
 }
 
 
-async function baseStatsTablePokemon(i) {
-    hp = singlePokemonJson[i]['stats'][0]['base_stat'];
-    attack = singlePokemonJson[i]['stats'][1]['base_stat'];
-    defense = singlePokemonJson[i]['stats'][2]['base_stat'];
-    spAtk = singlePokemonJson[i]['stats'][3]['base_stat'];
-    spDef = singlePokemonJson[i]['stats'][4]['base_stat'];
-    speed = singlePokemonJson[i]['stats'][5]['base_stat'];
-    total = hp + attack + defense + spAtk + spDef + speed;
-    totalBar = (total / 600) * 100;
+function baseStatsTablePokemon(i) {
+    let hp = allPokemons[i]['stats'][0]['base_stat'];
+    let attack = allPokemons[i]['stats'][1]['base_stat'];
+    let defense = allPokemons[i]['stats'][2]['base_stat'];
+    let spAtk = allPokemons[i]['stats'][3]['base_stat'];
+    let spDef = allPokemons[i]['stats'][4]['base_stat'];
+    let speed = allPokemons[i]['stats'][5]['base_stat'];
+    let total = hp + attack + defense + spAtk + spDef + speed;
+    let totalBar = (total / 600) * 100;
+
+    return {hp, attack, defense, spAtk, spDef, speed, total, totalBar };
 }
 
 
-function pokemonGenderRate(responseAsJson) {
-    let gender_rate = responseAsJson.gender_rate;
+function pokemonGenderRate(responsePokemonSpecies, i) {
+    let gender_rate = responsePokemonSpecies[i].gender_rate;
     let strGender = "";
 
     if (gender_rate === -1) {
@@ -65,10 +38,9 @@ function pokemonGenderRate(responseAsJson) {
 }
 
 
-
-function typeColorBigCard(type, i) {
-    let bgcolor = typeColors[type.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
-
+function typeColorBigCard(i) {
+    let color = allPokemons[i]['types']['0']['type']['name'];
+    let bgcolor = typeColors[color.toLowerCase()] || '#A8A878'; // Standardfarbe, falls Typ nicht gefunden
     document.getElementById(`bigCardContainer${i}`).style.backgroundColor = bgcolor;
 }
 
@@ -102,11 +74,12 @@ function showMoves() {
 }
 
 
-
-
-
 async function openDialogPokemon(i) {
-    await fetchDataJsonPokemonSpecies(i);
+    let baseStats = baseStatsTablePokemon(i);
+
+    let picture = allPokemons[i]['sprites']['other']['dream_world']['front_default'];
+    let type_1 = allPokemons[i]['types']['0']['type']['name'];
+    let type_2 = allPokemons[i]['types']['1']?.['type']['name'] || '';
 
     let dialog = document.getElementById('bgDialog');
     dialog.classList.remove('d-none');
@@ -119,22 +92,22 @@ async function openDialogPokemon(i) {
         </div>
         <div id="bigCardContainer${i}" class="big-card-container" onclick="event.stopPropagation()">
             <div class="big-card-top">
-                <img src="${picturesPokemon[i]}" class="big-picture-card" alt="">
+                <img src="${picture}" class="big-picture-card" alt="">
                 <div class="big-card-type-name">
                     <div>
                         <img onclick="arrowLeft(${i})" class="mini-arrow mini-arrow-left" src="./icon/black-arrow-back.png" alt="">
                     </div>
                     <div>
                         <div class="big-card-header fw-bold">
-                            <div>#${i + 1}</div>            <!--ID faengt bei 1 an--> 
-                            <div>${pokemonsNameIndex[i]['name'].toUpperCase()}</div>
+                            <div>#${allPokemons[i]['id']}</div>            <!--ID faengt bei 1 an--> 
+                            <div>${allPokemons[i]['name'].toUpperCase()}</div>
                         </div>
                         <div class="big-card-type fw-semibold mb-3">
                             <div class="card-text">
-                                ${typesPokemon1[i]}  
+                                ${type_1}  
                             </div>
                             <div class="card-text">
-                                ${typesPokemon2[i]}  
+                                ${type_2}  
                             </div>
                         </div>
                     </div>
@@ -155,19 +128,19 @@ async function openDialogPokemon(i) {
                     <table class="about-table-pokemon">
                         <tr>
                             <td class="w-90">Species</td>
-                            <td class="fw-semibold">${species}</td>
+                            <td class="fw-semibold">${responsePokemonSpecies[i].genera[7].genus}</td>
                         </tr>
                         <tr>
                             <td class="w-90">Height</td>
-                            <td class="fw-semibold">${height} cm</td>
+                            <td class="fw-semibold">${allPokemons[i]['height']} cm</td>
                         </tr>
                         <tr>
                             <td class="w-90">Weight</td>
-                            <td class="fw-semibold">${weight} kg</td>
+                            <td class="fw-semibold">${allPokemons[i]['weight']} kg</td>
                         </tr>
                         <tr>
                             <td class="w-90">Abilities</td>
-                            <td class="fw-semibold">${abilitie1}, ${abilitie2}</td>
+                            <td class="fw-semibold">${allPokemons[i]['abilities'][0]['ability']['name']}, ${allPokemons[i]['abilities'][1]?.['ability']['name'] || ''}</td>
                         </tr>
                         <tr>
                             <td class="h5"><b>Breeding</b></td>
@@ -178,11 +151,11 @@ async function openDialogPokemon(i) {
                         </tr>
                         <tr>
                             <td class="w-90">Egg Groups</td>
-                            <td class="fw-semibold">${eggGroups}</td>
+                            <td class="fw-semibold">${responsePokemonSpecies[i].egg_groups[0].name}, ${responsePokemonSpecies[i].egg_groups[1]?.name || ''}</td>
                         </tr>
                         <tr>
                             <td class="w-90">Egg Cycle</td>
-                            <td class="fw-semibold">${eggCycle}</td>
+                            <td class="fw-semibold">${responsePokemonSpecies[i].hatch_counter}</td>
                         </tr>
                     </table>
                 </div>
@@ -192,64 +165,64 @@ async function openDialogPokemon(i) {
                         <table class="table-baseStats mb-3">
                             <tr>
                                 <td class="pe-4">HP</td>
-                                <td class="fw-semibold">${hp}</td>
+                                <td class="fw-semibold">${baseStats.hp}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar">
-                                    <div class="progress-bar" style="width: ${hp}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.hp}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Attack</td>
-                                <td class="fw-semibold">${attack}</td>
+                                <td class="fw-semibold">${baseStats.attack}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: ${attack}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.attack}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="pe-4">Defense</td>
-                                <td class="fw-semibold">${defense}</td>
+                                <td class="fw-semibold">${baseStats.defense}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar">
-                                    <div class="progress-bar" style="width: ${defense}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.defense}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Sp. Atk</td>
-                                <td class="fw-semibold">${spAtk}</td>
+                                <td class="fw-semibold">${baseStats.spAtk}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: ${spAtk}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.spAtk}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Sp. Def</td>
-                                <td class="fw-semibold">${spDef}</td>
+                                <td class="fw-semibold">${baseStats.spDef}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: ${spDef}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.spDef}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Speed</td>
-                                <td class="pe-3 fw-semibold">${speed}</td>
+                                <td class="pe-3 fw-semibold">${baseStats.speed}</td>
                                 <td class="me-3 w-100p">
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: ${speed}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.speed}%"></div>
                                 </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Total</td>
-                                <td class="fw-semibold">${total}</td>
+                                <td class="fw-semibold">${baseStats.total}</td>
                                 <td class="w-100p">
                                 <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar" style="width: ${totalBar}%"></div>
+                                    <div class="progress-bar" style="width: ${baseStats.totalBar}%"></div>
                                 </div>
                                 </td>
                             </tr>
@@ -271,7 +244,7 @@ async function openDialogPokemon(i) {
             <img onclick="arrowRight(${i})" class="arrow" src="./icon/black-arrow-forward.png" alt="">
         </div>
     `;
-    typeColorBigCard(typesPokemon1[i], i);
+    typeColorBigCard(i);
 }
 
 
@@ -287,8 +260,8 @@ function arrowLeft(i) {
 
     event.stopPropagation();
     if (j < 0) {
-        openDialogPokemon(picturesPokemon.length - 1);
-        fetchDataJsonPokemonSpecies(picturesPokemon.length - 1);
+        openDialogPokemon(allPokemons.length - 1);
+        fetchDataJsonPokemonSpecies(allPokemons.length - 1);
 
     } else {
         openDialogPokemon(j);
@@ -303,7 +276,7 @@ function arrowRight(i) {
     let j = ++i;
 
     event.stopPropagation();
-    if (j >= picturesPokemon.length) {
+    if (j >= allPokemons.length) {
         fetchDataJsonPokemonSpecies(0);
         openDialogPokemon(0);
 
