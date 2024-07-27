@@ -227,8 +227,6 @@ async function openDialogPokemon(i) {
                                 </td>
                             </tr>
                         </table>
-                        <!-- <p class="mb-1"><b>Type defenses</b></p>
-                        <p>abc</p> -->
                     </div>
                 </div>
                 <div id="evolutionCharacter" class="d-none comming-soon">
@@ -248,10 +246,8 @@ async function openDialogPokemon(i) {
 }
 
 
-
 function closeDialog() {
     document.getElementById('bgDialog').classList.add('d-none');
-
 }
 
 
@@ -267,8 +263,6 @@ function arrowLeft(i) {
         openDialogPokemon(j);
         fetchDataJsonPokemonSpecies(j);
     }
-
-
 }
 
 
@@ -279,7 +273,6 @@ function arrowRight(i) {
     if (j >= allPokemons.length) {
         fetchDataJsonPokemonSpecies(0);
         openDialogPokemon(0);
-
     } else {
         fetchDataJsonPokemonSpecies(j);
         openDialogPokemon(j);
